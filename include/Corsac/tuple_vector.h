@@ -1004,6 +1004,12 @@ namespace corsac
             swallow((corsac::destruct(TupleVecLeaf<Indices, Ts>::mpData, TupleVecLeaf<Indices, Ts>::mpData + oldNumElements), 0)...);
         }
 
+        void reset_lose_memory() noexcept
+        {
+            size_type oldNumElements = mNumElements;
+            mNumElements = 0;
+        }
+
         void pop_back()
         {
             #if CORSAC_ASSERT_ENABLED
