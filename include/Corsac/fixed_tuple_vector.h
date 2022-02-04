@@ -44,6 +44,12 @@ namespace corsac
         using base_type                 = TupleVecInternal::TupleVecImpl<fixed_allocator_type, make_index_sequence<sizeof...(Ts)>, Ts...>;
         using size_type                 = typename base_type::size_type;
 
+        using value_type                = typename base_type::value_tuple;
+        using pointer                   = typename base_type::ptr_tuple;
+        using const_pointer             = typename base_type::const_ptr_tuple;
+        using reference                 = typename base_type::reference_tuple;
+        using const_reference           = typename base_type::const_reference_tuple;
+
     private:
     aligned_buffer_type mBuffer;
 

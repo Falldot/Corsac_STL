@@ -27,7 +27,7 @@
 *    #endif
 *
 */
-#if defined(CORSAC_DEBUG) || defined(_DEBUG)
+#if defined(CORSAC_DEBUG) || defined(_DEBUG) || defined(DEBUG)
     #define CORSAC_DEBUG 1
 #else
     #define CORSAC_DEBUG 0

@@ -827,7 +827,7 @@ namespace corsac
         // Разница между get() и operator [], at() заключается в том,
         // что он сигнализирует, что запрошенная позиция выходит за
         // пределы допустимого диапазона, возращая nullptr
-        // в положительном исходе возвращает ссылку на элемент
+        // в положительном исходе возвращает указатель на элемент
         if(CORSAC_UNLIKELY(n >= (static_cast<size_type>(mpEnd - mpBegin))))
             return nullptr;
         return (mpBegin + n);
@@ -1082,10 +1082,10 @@ namespace corsac
     inline typename vector<T, Allocator>::iterator
     vector<T, Allocator>::erase_unsorted(const_iterator position)
     {
-        #if CORSAC_ASSERT_ENABLED
-            if(CORSAC_UNLIKELY((position < mpBegin) || (position >= mpEnd)))
-                {CORSAC_FAIL_MSG("vector::erase -- invalid position")}
-        #endif
+    #if CORSAC_ASSERT_ENABLED
+        if(CORSAC_UNLIKELY((position < mpBegin) || (position >= mpEnd)))
+            {CORSAC_FAIL_MSG("vector::erase -- invalid position")}
+    #endif
         iterator destPosition = const_cast<value_type*>(position);
         *destPosition = corsac::move(*(mpEnd - 1));
 
@@ -1190,7 +1190,7 @@ namespace corsac
     template <typename T, typename Allocator>
     inline void vector<T, Allocator>::reset_lose_memory() noexcept
     {
-        // Функция сброса - это специальная функция расширения, которая в одностороннем порядке
+        // Функция сброса - это специальная функция, которая в одностороннем порядке
         // сбрасывает контейнер в пустое состояние, не освобождая память содержащихся в нем объектов.
         // Это полезно для очень быстрого удаления контейнера, встроенного в рабочую память.
         mpBegin = mpEnd = internalCapacityPtr() = NULL;

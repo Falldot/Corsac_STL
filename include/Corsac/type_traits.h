@@ -262,7 +262,7 @@ namespace corsac
      * integer_sequence
      *
      * Представляет последовательность целых чисел. Может использоваться для вывода и расширения пакетов
-     * параметров в Variadic типах, таких как std:: Tuple <T...> , которые передаются в качестве аргументов функции.
+     * параметров в Variadic типах, таких как std::Tuple<T...>, которые передаются в качестве аргументов функции.
      */
     template <typename T, T... Ints>
     class integer_sequence
@@ -312,7 +312,7 @@ namespace corsac
     template <typename T, size_t N>
     using make_integer_sequence = typename make_integer_sequence_impl<T, N>::type;
 
-    // Шаблон псевдонима помощника, который преобразует любой пакет параметров типа в последовательность индексов той же длины
+    // Шаблон псевдонима помощника, который преобразует любой набор параметров типа в последовательность индексов той же длины
     template<typename... T>
     using index_sequence_for = make_index_sequence<sizeof...(T)>;
 
