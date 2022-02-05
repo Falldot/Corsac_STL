@@ -683,6 +683,13 @@ namespace corsac
             return back();
         }
 
+        template<typename Function>
+        void each(Function function)
+        {
+            for (int i = 0; i < size(); ++i)
+                function(i, *(TupleVecLeaf<Indices, Ts>::mpData + i)...);
+        }
+
         iterator emplace(const_iterator pos, Ts&&... args)
         {
             #if CORSAC_ASSERT_ENABLED
@@ -930,19 +937,37 @@ namespace corsac
 
         iterator erase_unsorted(const_iterator pos)
         {
-            #if CORSAC_ASSERT_ENABLED
+        #if CORSAC_ASSERT_ENABLED
             if (CORSAC_UNLIKELY(validate_iterator(pos) == isf_none))
                     {CORSAC_FAIL_MSG("tuple_vector::erase_unsorted -- invalid iterator")}
+        #endif
+            size_type oldNumElements = mNumElements;
+            size_type newNumElements = oldNumElements - 1;
+            mNumElements = newNumElements;
+            swallow((corsac::move(TupleVecLeaf<Indices, Ts>::mpData + newNumElements,
+                                 TupleVecLeaf<Indices, Ts>::mpData + oldNumElements,
+                                 TupleVecLeaf<Indices, Ts>::mpData + (pos - begin())), 0)...);
+            swallow((corsac::destruct(TupleVecLeaf<Indices, Ts>::mpData + newNumElements,
+                                     TupleVecLeaf<Indices, Ts>::mpData + oldNumElements), 0)...);
+            return begin() + pos.mIndex;
+        }
+
+        iterator erase_unsorted(size_type n)
+        {
+            const_iterator pos = const_iterator((const_this_type*)(this), n);
+            #if CORSAC_ASSERT_ENABLED
+                if (CORSAC_UNLIKELY(validate_iterator(pos) == isf_none))
+                    {CORSAC_FAIL_MSG("tuple_vector::erase_unsorted -- invalid iterator")}
             #endif
-        size_type oldNumElements = mNumElements;
-        size_type newNumElements = oldNumElements - 1;
-        mNumElements = newNumElements;
-        swallow((corsac::move(TupleVecLeaf<Indices, Ts>::mpData + newNumElements,
-                             TupleVecLeaf<Indices, Ts>::mpData + oldNumElements,
-                             TupleVecLeaf<Indices, Ts>::mpData + (pos - begin())), 0)...);
-        swallow((corsac::destruct(TupleVecLeaf<Indices, Ts>::mpData + newNumElements,
-                                 TupleVecLeaf<Indices, Ts>::mpData + oldNumElements), 0)...);
-        return begin() + pos.mIndex;
+            size_type oldNumElements = mNumElements;
+            size_type newNumElements = oldNumElements - 1;
+            mNumElements = newNumElements;
+            swallow((corsac::move(TupleVecLeaf<Indices, Ts>::mpData + newNumElements,
+                                  TupleVecLeaf<Indices, Ts>::mpData + oldNumElements,
+                                  TupleVecLeaf<Indices, Ts>::mpData + (pos - begin())), 0)...);
+            swallow((corsac::destruct(TupleVecLeaf<Indices, Ts>::mpData + newNumElements,
+                                      TupleVecLeaf<Indices, Ts>::mpData + oldNumElements), 0)...);
+            return begin() + pos.mIndex;
         }
 
         void resize(size_type n)
@@ -1523,6 +1548,12 @@ namespace corsac
         using base_type::base_type;
 
     public:
+        using value_type                = typename base_type::value_tuple;
+        using pointer                   = typename base_type::ptr_tuple;
+        using const_pointer             = typename base_type::const_ptr_tuple;
+        using reference                 = typename base_type::reference_tuple;
+        using const_reference           = typename base_type::const_reference_tuple;
+
         this_type& operator=(std::initializer_list<typename base_type::value_tuple> iList)
         {
             base_type::operator=(iList);
@@ -1547,6 +1578,7 @@ namespace corsac
             return *this;
         }
     };
+
 } // corsac
 
 CORSAC_RESTORE_VC_WARNING()

@@ -1459,7 +1459,6 @@ namespace corsac
         return first;
     }
 
-
     /// generate
     ///
     /// Iterates the range of [first, last) and assigns to each element the

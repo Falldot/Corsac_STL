@@ -164,6 +164,25 @@ namespace corsac
     inline constexpr bool is_nothrow_invocable_r_v = is_nothrow_invocable_r<R, F, Args...>::value;
 
     /**
+     * is_applicable
+     *
+     * Тоже что и is_invocable но для tuple
+     *
+     */
+    template<typename, typename>
+    struct is_applicable: std::false_type {};
+
+    template<typename Func, template<typename...> class Tuple, typename... Args>
+    struct is_applicable<Func, Tuple<Args...>>: corsac::is_invocable<Func, Args...> {};
+
+    template<typename Func, template<typename...> class Tuple, typename... Args>
+    struct is_applicable<Func, const Tuple<Args...>>: corsac::is_invocable<Func, Args...> {};
+
+    template<typename Func, typename Args>
+    inline constexpr bool is_applicable_v = is_applicable<Func, Args>::value;
+
+
+    /**
     * allocator_arg_t
     *
     * allocator_arg_t - это пустой тип класса, используемый для устранения неоднозначности перегрузок
